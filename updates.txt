@@ -1,0 +1,4 @@
+Put together a more interesting event use case with an event
+Capturing request parameters 
+Using DataAmount tags
+Capturing response

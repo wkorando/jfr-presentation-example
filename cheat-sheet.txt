@@ -1,0 +1,33 @@
+java -XX:StartFlightRecording=filename=recording.jfr,dumponexit=true -jar target/spring-petclinic-3.3.0-SNAPSHOT.jar
+
+jps
+
+jcmd <> JFR.start filename=inflight-recording.jfr
+
+jcmd <> JFR.dump
+
+java -XX:StartFlightRecording=filename=boston-acm-recording.jfr,maxage=5m,maxsize=10M -XX:FlightRecorderOptions:repository=/Users/bkorando/tmp/boston-acm,maxchunksize=2M -jar spring-petclinic/target/spring-petclinic-3.3.0-SNAPSHOT.jar
+
+java -XX:StartFlightRecording=disk=true,filename=zgc-recording.jfr,dumponexit=true -XX:+UseZGC -jar target/spring-petclinic-3.3.0-SNAPSHOT.jar
+
+java -XX:StartFlightRecording=disk=true,filename=parallel-recording.jfr,dumponexit=true -XX:+UseParallelGC -jar target/spring-petclinic-3.3.0-SNAPSHOT.jar
+
+java -javaagent:../health-report.jar -XX:StartFlightRecording=filename=recording.jfr,dumponexit=true -jar target/spring-petclinic-3.3.0-SNAPSHOT.jar
+
+jfr summary recording.jfr
+
+jfr print --events 'jdk.ThreadStart' recording.jfr
+
+jfr print --categories 'GC' recording.jfr
+
+jfr configure --interactive --output boston-acm.jfc
+
+jfr scrub --exclude-categories 'PII' recording.jfr recording-no-pii.jfr
+
+jfr print --categories 'PII' recording.jfr
+
+java -XX:StartFlightRecording=filename=recording.jfr,dumponexit=true,settings=boston-acm.jfc -jar target/spring-petclinic-3.3.0-SNAPSHOT.jar
+
+jfr scrub --include-events 'GC*' recording.jfr
+
+jfr scrub --exclude-categories 'PII' recording.jfr

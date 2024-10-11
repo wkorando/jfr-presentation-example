@@ -18,12 +18,14 @@ package org.springframework.samples.petclinic.system;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.context.request.RequestAttributes;
 
 @Controller
 class WelcomeController {
 
 	@GetMapping("/")
-	public String welcome() {
+	public String welcome(RequestAttributes requestAttributes) {
+		System.out.println( requestAttributes.getAttributeNames(RequestAttributes.SCOPE_REQUEST));
 		return "welcome";
 	}
 
